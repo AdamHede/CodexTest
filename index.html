@@ -1,160 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Pricing Maturity Assessment</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Palatino+Linotype&family=Arial:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-            color: #000;
-        }
-        h1, h2, h3 {
-            font-family: 'Palatino Linotype', serif;
-            margin-top: 0;
-        }
-        #app {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        button {
-            background-color: #6C807F;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255,255,255,0.9);
-            border-top: 1px solid #ddd;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-        }
-        .hidden { display: none; }
-    </style>
-</head>
-<body>
-<div id="app"></div>
-<div class="footer">Contact Implement Consulting Group: <a href="mailto:ahed@implement.dk">ahed@implement.dk</a> / <a href="mailto:ras@implement.dk">ras@implement.dk</a></div>
-<script>
-const questions = [
-    {text: 'What is your company\'s primary pricing approach?', dimension: 'strategy'},
-    {text: 'How centralized is your pricing organization?', dimension: 'organization'},
-    {text: 'How frequently do you adjust prices?', dimension: 'performance'},
-    {text: 'What tools do you use for pricing analysis?', dimension: 'technology'},
-    {text: 'How do you communicate value to customers?', dimension: 'communication'},
-    {text: 'How do you gather competitive pricing intelligence?', dimension: 'intelligence'},
-    {text: 'How do you measure pricing performance?', dimension: 'performance'},
-    {text: 'How do you segment customers for pricing purposes?', dimension: 'strategy'},
-    {text: 'What percentage of deals involve custom pricing?', dimension: 'organization'},
-    {text: 'How do you handle price increases with existing customers?', dimension: 'communication'},
-    {text: 'What AI or machine learning capabilities do you have for pricing?', dimension: 'technology'},
-    {text: 'How do you measure customer price sensitivity?', dimension: 'intelligence'},
-    {text: 'What outcome-based pricing models do you offer?', dimension: 'strategy'},
-    {text: 'How do you integrate pricing with sales forecasting?', dimension: 'performance'},
-    {text: 'What real-time pricing capabilities do you have?', dimension: 'technology'}
-];
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Prototype</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="viewport">
+      <section class="hud">
+        <h1>Interactive Web Game Prototype</h1>
+        <p class="tagline">Hello, world! The adventure will begin here soon.</p>
+      </section>
+      <canvas id="gameCanvas" width="640" height="360" aria-label="Game canvas"></canvas>
+    </main>
 
-let current = 0;
-const answers = [];
-
-function start() {
-    const app = document.getElementById('app');
-    app.innerHTML = `<h1>Pricing Maturity Assessment</h1>
-    <p>Welcome! You will answer 15 questions about your pricing approach. After completing the survey you\'ll receive an AI-generated report summarizing your maturity level.</p>
-    <button onclick="next()">Begin</button>`;
-}
-
-function next() {
-    if (current < questions.length) {
-        showQuestion(current);
-    } else {
-        finish();
-    }
-}
-
-function showQuestion(index) {
-    const q = questions[index];
-    const app = document.getElementById('app');
-    app.innerHTML = `<h2>Question ${index+1} of ${questions.length}</h2>
-        <p>${q.text}</p>
-        <input type="text" id="answer" style="width:100%" />
-        <button onclick="saveAnswer()">Next</button>`;
-}
-
-function saveAnswer() {
-    const input = document.getElementById('answer');
-    answers.push(input.value);
-    current++;
-    next();
-}
-
-function finish() {
-    const scores = computeScores();
-    renderReport(scores);
-}
-
-function computeScores() {
-    // very rough scoring: map answer length to score 1-5 for demo purposes
-    const dimensions = {strategy:0,intelligence:0,technology:0,organization:0,communication:0,performance:0};
-    const counts = {strategy:0,intelligence:0,technology:0,organization:0,communication:0,performance:0};
-    questions.forEach((q,i)=>{
-        const dim=q.dimension;
-        counts[dim]++;
-        let s = Math.min(5, Math.max(1, Math.ceil((answers[i].length%50)/10)));
-        dimensions[dim]+=s;
-    });
-    const result={};
-    Object.keys(dimensions).forEach(dim=>{
-        result[dim]=dimensions[dim]/counts[dim];
-    });
-    return result;
-}
-
-function renderReport(scores) {
-    const app = document.getElementById('app');
-    app.innerHTML = `<h1>Your Pricing Maturity Report</h1><canvas id="radar" width="400" height="400"></canvas><div id="aiReport"><p>Generating AI recommendations...</p></div>`;
-    const ctx = document.getElementById('radar');
-    const data = {
-        labels: ['Strategy','Intelligence','Technology','Organization','Communication','Performance'],
-        datasets: [{label:'Score', data:[scores.strategy, scores.intelligence, scores.technology, scores.organization, scores.communication, scores.performance], backgroundColor:'rgba(108,128,127,0.2)', borderColor:'#6C807F'}]
-    };
-    new Chart(ctx, {type:'radar', data:data, options:{scales:{r:{min:0,max:5,ticks:{stepSize:1}}}}});
-    callClaude(scores);
-}
-
-async function callClaude(scores) {
-    const prompt = `You are a pricing expert. Provide strategic advice. Scores: ${JSON.stringify(scores)}.`;
-    try {
-        const response = await fetch('https://api.anthropic.com/v1/complete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': 'YOUR_API_KEY'
-            },
-            body: JSON.stringify({prompt:prompt, model:'claude-instant-v1', max_tokens:200})
-        });
-        const data = await response.json();
-        document.getElementById('aiReport').innerHTML = `<h2>Recommendations</h2><p>${data.completion}</p><p>Contact us for more information.</p>`;
-    } catch(e) {
-        document.getElementById('aiReport').innerHTML = `<p>Could not reach AI service. Please try again later.</p>`;
-    }
-}
-
-start();
-</script>
-</body>
+    <script type="module" src="main.js"></script>
+  </body>
 </html>
