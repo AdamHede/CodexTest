@@ -3,17 +3,113 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Game Prototype</title>
+    <title>Rover Explorer</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="viewport">
-      <section class="hud">
-        <h1>Interactive Web Game Prototype</h1>
-        <p class="tagline">Hello, world! The adventure will begin here soon.</p>
+    <header class="app-header">
+      <h1>Rover Explorer</h1>
+      <p class="subtitle">Design the mission, configure the rover, and scout a living world from your phone.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="world-config-title">
+        <h2 id="world-config-title">World Configuration</h2>
+        <p class="panel-intro">
+          Tune the geological age and climate sliders to influence the planet that will be generated for this expedition.
+        </p>
+        <div class="form-field">
+          <label for="ageSlider">Geological Age <span class="value" id="ageValue">50</span></label>
+          <input type="range" id="ageSlider" min="0" max="100" value="50" />
+          <p class="hint">Young worlds are jagged and volatile. Older worlds are smoother and eroded.</p>
+        </div>
+        <div class="form-field">
+          <label for="temperatureSlider">Temperature <span class="value" id="temperatureValue">50</span></label>
+          <input type="range" id="temperatureSlider" min="0" max="100" value="50" />
+          <p class="hint">Lower values trend toward frozen tundras. Higher values generate deserts and jungles.</p>
+        </div>
+        <div class="form-field">
+          <label for="humiditySlider">Humidity <span class="value" id="humidityValue">50</span></label>
+          <input type="range" id="humiditySlider" min="0" max="100" value="50" />
+          <p class="hint">Dry climates expose minerals while humid climates grow dense vegetation.</p>
+        </div>
       </section>
-      <canvas id="gameCanvas" width="640" height="360" aria-label="Game canvas"></canvas>
+
+      <section class="panel" aria-labelledby="rover-config-title">
+        <h2 id="rover-config-title">Rover Configuration</h2>
+        <p class="panel-intro">Select modules that complement the mission's conditions.</p>
+        <div class="form-field">
+          <label for="locomotionSelect">Locomotion</label>
+          <select id="locomotionSelect"></select>
+          <p class="hint" id="locomotionHint"></p>
+        </div>
+        <div class="form-field">
+          <label for="powerSelect">Power Core</label>
+          <select id="powerSelect"></select>
+          <p class="hint" id="powerHint"></p>
+        </div>
+        <div class="form-field">
+          <label for="cargoSelect">Cargo Hold</label>
+          <select id="cargoSelect"></select>
+          <p class="hint" id="cargoHint"></p>
+        </div>
+        <div class="form-field">
+          <label for="utilitySelect">Utility Module</label>
+          <select id="utilitySelect"></select>
+          <p class="hint" id="utilityHint"></p>
+        </div>
+        <button id="launchButton" class="primary" type="button">Launch Expedition</button>
+      </section>
+
+      <section class="panel expedition" aria-live="polite" aria-labelledby="expedition-title">
+        <div class="expedition-header">
+          <h2 id="expedition-title">Expedition Status</h2>
+          <button id="endButton" class="ghost" type="button">End Expedition</button>
+        </div>
+        <div class="mission-stats">
+          <div class="stat">
+            <span class="label">Energy</span>
+            <span id="energyStat" class="value">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Cargo</span>
+            <span id="cargoStat" class="value">0 / 0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Resources</span>
+            <span id="resourcesStat" class="value">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Exploration</span>
+            <span id="explorationStat" class="value">0</span>
+          </div>
+        </div>
+        <div class="map-wrapper">
+          <div class="map" id="map" role="grid" aria-label="Exploration map"></div>
+          <aside class="map-sidebar">
+            <h3>Terrain Summary</h3>
+            <ul id="legend" class="legend"></ul>
+          </aside>
+        </div>
+        <div class="controls" aria-label="Rover controls">
+          <div class="dpad">
+            <button data-direction="up" aria-label="Move north">▲</button>
+            <div class="middle-row">
+              <button data-direction="left" aria-label="Move west">◄</button>
+              <button data-direction="scan" aria-label="Scan surroundings">◎</button>
+              <button data-direction="right" aria-label="Move east">►</button>
+            </div>
+            <button data-direction="down" aria-label="Move south">▼</button>
+          </div>
+          <button id="collectButton" class="primary" type="button">Collect Resource</button>
+        </div>
+        <p class="status-message" id="statusMessage">Configure a mission and launch to begin your expedition.</p>
+      </section>
     </main>
+
+    <footer class="app-footer">
+      <p>Prototype inspired by the Rover Explorer design document. Optimized for touch screens and mobile browsers.</p>
+    </footer>
 
     <script type="module" src="main.js"></script>
   </body>
