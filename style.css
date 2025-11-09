@@ -8,6 +8,8 @@
   --accent-strong: #9cc4ff;
   --text: #f4f6ff;
   --muted: #97a1c1;
+  --grid-size: 10;
+  --tile-size: 36px;
   background: radial-gradient(circle at 20% 20%, rgba(47, 61, 96, 0.45), transparent 60%),
     radial-gradient(circle at 80% 0%, rgba(37, 45, 71, 0.55), transparent 60%),
     var(--bg);
@@ -95,6 +97,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.budget {
+  margin: 0.25rem 0 0.5rem;
+  font-weight: 600;
+  color: var(--accent-strong);
 }
 
 .form-field label {
@@ -214,22 +222,29 @@ button.ghost:disabled {
   gap: 1rem;
 }
 
-@media (min-width: 720px) {
+@media (min-width: 860px) {
   .map-wrapper {
     flex-direction: row;
+    align-items: flex-start;
   }
 }
 
-.map {
-  display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
-  gap: 4px;
-  width: min(100%, 480px);
-  aspect-ratio: 1 / 1;
+.map-scroll {
   background: rgba(9, 11, 18, 0.85);
   border-radius: 18px;
   padding: 0.75rem;
   border: 1px solid rgba(125, 166, 255, 0.25);
+  overflow: auto;
+  max-height: min(70vh, 620px);
+  max-width: min(100%, 520px);
+}
+
+.map {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-size), var(--tile-size));
+  grid-auto-rows: var(--tile-size);
+  gap: 2px;
+  width: max-content;
 }
 
 .tile {
@@ -238,11 +253,15 @@ button.ghost:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(0.7rem, 2.2vw, 0.85rem);
+  font-size: clamp(0.55rem, 1.5vw, 0.7rem);
   text-align: center;
-  padding: 0.2rem;
+  padding: 0.15rem;
+  min-width: var(--tile-size);
+  min-height: var(--tile-size);
   color: rgba(4, 6, 11, 0.9);
   transition: transform 120ms ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .tile[data-state="hidden"] {
@@ -258,6 +277,11 @@ button.ghost:disabled {
   transform: scale(1.08);
   box-shadow: 0 8px 20px rgba(84, 121, 255, 0.4);
   border-color: rgba(125, 166, 255, 0.6);
+}
+
+.tile[data-inspected="true"] {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: -2px;
 }
 
 .tile[data-resource="none"]::after {
@@ -330,12 +354,84 @@ button.ghost:disabled {
   color: var(--muted);
 }
 
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend li::before {
+  content: "";
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 4px;
+  background: currentColor;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.legend-code {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.map-sidebar {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  width: min(320px, 100%);
+}
+
+.legend-panel,
+.inspector,
+.control-stack,
+.testing {
+  background: rgba(13, 16, 24, 0.75);
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.tile-details {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.tile-details div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.tile-details dt {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.tile-details dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
+}
+
+.control-stack .controls {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+.control-stack .dpad {
+  align-self: center;
 }
 
 .dpad {
@@ -364,6 +460,17 @@ button.ghost:disabled {
   margin: 0;
   font-size: 0.95rem;
   color: var(--muted);
+}
+
+.testing-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.testing-buttons button {
+  flex: 1 1 120px;
+  background: rgba(125, 166, 255, 0.18);
 }
 
 @media (max-width: 540px) {
