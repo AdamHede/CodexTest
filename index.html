@@ -38,6 +38,7 @@
       <section class="panel" aria-labelledby="rover-config-title">
         <h2 id="rover-config-title">Rover Configuration</h2>
         <p class="panel-intro">Select modules that complement the mission's conditions.</p>
+        <p class="budget" aria-live="polite">Outfitting budget remaining: <span id="budgetValue">180</span> credits</p>
         <div class="form-field">
           <label for="locomotionSelect">Locomotion</label>
           <select id="locomotionSelect"></select>
@@ -80,28 +81,71 @@
             <span id="resourcesStat" class="value">0</span>
           </div>
           <div class="stat">
+            <span class="label">Credits</span>
+            <span id="creditsStat" class="value">0</span>
+          </div>
+          <div class="stat">
             <span class="label">Exploration</span>
             <span id="explorationStat" class="value">0</span>
           </div>
         </div>
         <div class="map-wrapper">
-          <div class="map" id="map" role="grid" aria-label="Exploration map"></div>
-          <aside class="map-sidebar">
-            <h3>Terrain Summary</h3>
-            <ul id="legend" class="legend"></ul>
-          </aside>
-        </div>
-        <div class="controls" aria-label="Rover controls">
-          <div class="dpad">
-            <button data-direction="up" aria-label="Move north">▲</button>
-            <div class="middle-row">
-              <button data-direction="left" aria-label="Move west">◄</button>
-              <button data-direction="scan" aria-label="Scan surroundings">◎</button>
-              <button data-direction="right" aria-label="Move east">►</button>
-            </div>
-            <button data-direction="down" aria-label="Move south">▼</button>
+          <div class="map-scroll" aria-label="Exploration map viewport">
+            <div class="map" id="map" role="grid" aria-label="Exploration map"></div>
           </div>
-          <button id="collectButton" class="primary" type="button">Collect Resource</button>
+          <aside class="map-sidebar">
+            <section class="legend-panel">
+              <h3>Terrain Legend</h3>
+              <ul id="legend" class="legend"></ul>
+            </section>
+            <section class="inspector" aria-live="polite">
+              <h3>Tile Intel</h3>
+              <p id="tileSummary">Tap a charted tile to inspect its biome and hazards.</p>
+              <dl class="tile-details">
+                <div>
+                  <dt>Biome</dt>
+                  <dd id="tileBiome">—</dd>
+                </div>
+                <div>
+                  <dt>Resource</dt>
+                  <dd id="tileResource">—</dd>
+                </div>
+                <div>
+                  <dt>Distance</dt>
+                  <dd id="tileDistance">—</dd>
+                </div>
+                <div>
+                  <dt>Move Cost</dt>
+                  <dd id="tileCost">—</dd>
+                </div>
+              </dl>
+              <button id="moveButton" class="ghost" type="button" disabled>Move Rover Here</button>
+            </section>
+            <section class="control-stack" aria-label="Rover controls">
+              <h3>Controls</h3>
+              <div class="controls">
+                <div class="dpad">
+                  <button data-direction="up" aria-label="Move north">▲</button>
+                  <div class="middle-row">
+                    <button data-direction="left" aria-label="Move west">◄</button>
+                    <button data-direction="scan" aria-label="Scan surroundings">◎</button>
+                    <button data-direction="right" aria-label="Move east">►</button>
+                  </div>
+                  <button data-direction="down" aria-label="Move south">▼</button>
+                </div>
+                <button id="collectButton" class="primary" type="button">Collect Resource</button>
+              </div>
+            </section>
+            <section class="testing" aria-label="Testing controls">
+              <h3>Mission Debug</h3>
+              <p class="hint">Grant resources or credits while prototyping.</p>
+              <div class="testing-buttons">
+                <button id="addResources" type="button">+50 Resources</button>
+                <button id="addCredits" type="button">+40 Credits</button>
+                <button id="refillEnergy" type="button">Refill Energy</button>
+              </div>
+            </section>
+          </aside>
         </div>
         <p class="status-message" id="statusMessage">Configure a mission and launch to begin your expedition.</p>
       </section>
